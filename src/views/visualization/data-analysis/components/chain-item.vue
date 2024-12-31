@@ -39,42 +39,43 @@
   import useChartOption from '@/hooks/chart-option';
 
   const barChartOptionsFactory = () => {
-    const data = ref<any>([]);
-    const { chartOption } = useChartOption(() => {
-      return {
-        grid: {
-          left: 0,
-          right: 0,
-          top: 10,
-          bottom: 0,
-        },
-        xAxis: {
-          type: 'category',
-          show: false,
-        },
-        yAxis: {
-          show: false,
-        },
-        tooltip: {
-          show: true,
-          trigger: 'axis',
-        },
-        series: {
+    const data = ref<any[]>([]);
+    const { chartOption } = useChartOption(() => ({
+      grid: {
+        left: 0,
+        right: 0,
+        top: 10,
+        bottom: 0,
+      },
+      xAxis: {
+        type: 'category',
+        show: false,
+      },
+      yAxis: {
+        show: false,
+      },
+      tooltip: {
+        show: true,
+        trigger: 'axis',
+      },
+      series: [
+        {
           name: 'total',
-          data,
+          data: data.value, // 转换为普通数组
           type: 'bar',
           barWidth: 7,
           itemStyle: {
             borderRadius: 2,
           },
         },
-      };
-    });
+      ],
+    }));
     return {
       data,
       chartOption,
     };
   };
+
 
   const lineChartOptionsFactory = () => {
     const data = ref<number[][]>([[], []]);
@@ -131,48 +132,47 @@
   };
 
   const pieChartOptionsFactory = () => {
-    const data = ref<any>([]);
-    const { chartOption } = useChartOption(() => {
-      return {
-        grid: {
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
+    const data = ref<{ value: number; name: string }[]>([]);
+    const { chartOption } = useChartOption(() => ({
+      grid: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      },
+      legend: {
+        show: true,
+        top: 'center',
+        right: '0',
+        orient: 'vertical',
+        icon: 'circle',
+        itemWidth: 6,
+        itemHeight: 6,
+        textStyle: {
+          color: '#4E5969',
         },
-        legend: {
-          show: true,
-          top: 'center',
-          right: '0',
-          orient: 'vertical',
-          icon: 'circle',
-          itemWidth: 6,
-          itemHeight: 6,
-          textStyle: {
-            color: '#4E5969',
+      },
+      tooltip: {
+        show: true,
+      },
+      series: [
+        {
+          name: '总计',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          label: {
+            show: false,
           },
+          data: data.value, // 确保是符合要求的数组
         },
-        tooltip: {
-          show: true,
-        },
-        series: [
-          {
-            name: '总计',
-            type: 'pie',
-            radius: ['50%', '70%'],
-            label: {
-              show: false,
-            },
-            data,
-          },
-        ],
-      };
-    });
+      ],
+    }));
     return {
       data,
       chartOption,
     };
   };
+
 
   const props = defineProps({
     title: {
@@ -213,37 +213,37 @@
       const { data } = await queryPublicOpinionAnalysis(params);
       renderData.value = data;
       const { chartData } = data;
+
       if (props.chartType === 'bar') {
-        chartData.forEach((el, idx) => {
-          barData.value.push({
-            value: el.y,
-            itemStyle: {
-              color: idx % 2 ? '#2CAB40' : '#86DF6C',
-            },
-          });
-        });
+        barData.value = chartData.map((el, idx) => ({
+          value: el.y,
+          itemStyle: {
+            color: idx % 2 ? '#2CAB40' : '#86DF6C',
+          },
+        }));
         chartOption.value = barChartOption.value;
       } else if (props.chartType === 'line') {
-        chartData.forEach((el) => {
-          if (el.name === '2021') {
-            lineData.value[0].push(el.y);
-          } else {
-            lineData.value[1].push(el.y);
-          }
-        });
+        lineData.value = [
+          chartData.filter((el) => el.name === '2021').map((el) => el.y),
+          chartData.filter((el) => el.name !== '2021').map((el) => el.y),
+        ];
         chartOption.value = lineChartOption.value;
-      } else {
-        chartData.forEach((el) => {
-          pieData.value.push(el);
-        });
+      } else if (props.chartType === 'pie') {
+        pieData.value = chartData.map((el) => ({
+          value: el.y,
+          name: el.name,
+        }));
         chartOption.value = pieChartOption.value;
+      } else {
+        // console.error('Unsupported chart type');
       }
     } catch (err) {
-      // you can report use errorHandler or other
+      // console.error(err);
     } finally {
       setLoading(false);
     }
   };
+
   fetchData({ quota: props.quota });
 </script>
 
