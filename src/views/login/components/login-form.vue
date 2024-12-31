@@ -80,16 +80,20 @@
   const { loading, setLoading } = useLoading();
   const userStore = useUserStore();
 
+  // 登录配置
   const loginConfig = useStorage('login-config', {
     rememberPassword: true,
     username: 'admin', // 演示默认值
     password: 'admin', // demo default value
   });
+
+  // 用户信息
   const userInfo = reactive({
     username: loginConfig.value.username,
     password: loginConfig.value.password,
   });
 
+  // 登录
   const handleSubmit = async ({
     errors,
     values,
