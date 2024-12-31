@@ -2,6 +2,7 @@ import localeMessageBox from '@/components/message-box/locale/en-US';
 import localeLogin from '@/views/login/locale/en-US';
 
 import localeWorkplace from '@/views/dashboard/workplace/locale/en-US';
+import localeWorkplace1 from '@/views/dashboard/workplace1/locale/en-US';
 
 import localeMonitor from '@/views/dashboard/monitor/locale/en-US';
 
@@ -48,7 +49,7 @@ export default {
   ...localeMessageBox,
   ...localeLogin,
   ...localeWorkplace,
-
+  ...localeWorkplace1,
   ...localeMonitor,
   ...localeSearchTable,
   ...localeCardList,
