@@ -27,10 +27,13 @@ import locale500 from '@/views/exception/500/locale/zh-CN';
 import localeUserInfo from '@/views/user/info/locale/zh-CN';
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 
+import localeApplicationList from '@/views/application/list/locale/zh-CN';
+
 import localeSettings from './zh-CN/settings';
 
 export default {
   'menu.dashboard': '仪表盘',
+  'menu.application': '应用管理',
   'menu.server.dashboard': '仪表盘-服务端',
   'menu.server.workplace': '工作台-服务端',
   'menu.server.monitor': '实时监控-服务端',
@@ -50,6 +53,7 @@ export default {
   ...localeLogin,
   ...localeWorkplace,
   ...localeWorkplace1,
+  ...localeApplicationList,
   ...localeMonitor,
   ...localeSearchTable,
   ...localeCardList,

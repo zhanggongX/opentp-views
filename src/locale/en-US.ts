@@ -27,10 +27,13 @@ import locale500 from '@/views/exception/500/locale/en-US';
 import localeUserInfo from '@/views/user/info/locale/en-US';
 import localeUserSetting from '@/views/user/setting/locale/en-US';
 
+import localeApplicationList from '@/views/application/list/locale/en-US';
+
 import localeSettings from './en-US/settings';
 
 export default {
   'menu.dashboard': 'Dashboard',
+  'menu.application': 'Applications',
   'menu.server.dashboard': 'Dashboard-Server',
   'menu.server.workplace': 'Workplace-Server',
   'menu.server.monitor': 'Monitor-Server',
@@ -50,6 +53,7 @@ export default {
   ...localeLogin,
   ...localeWorkplace,
   ...localeWorkplace1,
+  ...localeApplicationList,
   ...localeMonitor,
   ...localeSearchTable,
   ...localeCardList,
