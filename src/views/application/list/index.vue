@@ -145,9 +145,13 @@
         @page-change="onPageChange"
       >
         <template #operations="{ record }">
-          <a-button v-permission="['admin']" type="text" size="small">
+          <a-button v-permission="['admin']" type="text" size="small" @click="openAppEdit">
             {{ $t('application.columns.operations.edit') }}
           </a-button>
+          <AppEdit ref="appEditRef">
+            <template #title>Custom Title</template>
+            <div>Drawer Content</div>
+          </AppEdit>
           <a-button
             v-permission="['admin']"
             type="text"
@@ -172,14 +176,15 @@
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
   import {
-    AppEditParams,
+    AppCreateOrEditParams,
     applicationDelete,
     applicationEdit,
-    AppParams,
+    AppListParams,
     AppRecord,
     queryApps,
   } from '@/api/application';
   import AppCreate from '@/views/application/list/components/application-add.vue';
+  import AppEdit from '@/views/application/list/components/application-edit.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
@@ -249,7 +254,7 @@
   ]);
   // 获取数据
   const fetchData = async (
-    params: AppParams = { current: 1, pageSize: 20 }
+    params: AppListParams = { current: 1, pageSize: 20 }
   ) => {
     setLoading(true);
     try {
@@ -268,7 +273,7 @@
     fetchData({
       ...basePagination,
       ...formModel.value,
-    } as unknown as AppParams);
+    } as unknown as AppListParams);
   };
   const onPageChange = (current: number) => {
     fetchData({ ...basePagination, current });
@@ -343,12 +348,12 @@
 
   // 处理提交事件
   const appCreateSubmit = (formData: { showName: string; appName: string }) => {
-    editSubmit(formData);
+    createSubmit(formData);
     appCreateModelVisible.value = false;
     fetchData();
   };
 
-  const editSubmit = async (params: AppEditParams) => {
+  const createSubmit = async (params: AppCreateOrEditParams) => {
     setLoading(true);
     try {
       const { data } = await applicationEdit(params);
@@ -373,6 +378,12 @@
     } finally {
       setLoading(false);
     }
+  };
+
+  const appEditRef = ref();
+
+  const openAppEdit = () => {
+    appEditRef.value?.open();
   };
 
   watch(

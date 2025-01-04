@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { defineProps, defineEmits, ref } from 'vue';
+  import { defineProps, defineEmits, ref, defineExpose } from 'vue';
 
   const props = defineProps({
     width: { type: Number, default: 340 },

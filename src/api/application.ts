@@ -17,22 +17,22 @@ export interface AppListRes {
   total: number;
 }
 
-export interface AppParams extends Partial<AppRecord> {
+export interface AppListParams extends Partial<AppRecord> {
   current: number;
   pageSize: number;
 }
 
-export interface AppEditParams {
+export interface AppCreateOrEditParams {
   showName: string;
   appName: string;
 }
 
-export interface AppEditRes {
+export interface AppCreateOrEditRes {
   code: number;
   message: string;
 }
 
-export function queryApps(params: AppParams) {
+export function queryApps(params: AppListParams) {
   return axios.get<AppListRes>('/api/applications/', {
     params,
     paramsSerializer: (obj) => {
@@ -41,10 +41,10 @@ export function queryApps(params: AppParams) {
   });
 }
 
-export function applicationEdit(params: AppEditParams) {
-  return axios.post<AppEditRes>('/api/applications/', params);
+export function applicationEdit(params: AppCreateOrEditParams) {
+  return axios.post<AppCreateOrEditRes>('/api/applications/', params);
 }
 
 export function applicationDelete(appKey: string) {
-  return axios.delete<AppEditRes>(`/api/applications/${appKey}`);
+  return axios.delete<AppCreateOrEditRes>(`/api/applications/${appKey}`);
 }
