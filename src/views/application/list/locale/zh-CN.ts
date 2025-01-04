@@ -26,4 +26,6 @@ export default {
   'application.actions.refresh': '刷新',
   'application.actions.density': '密度',
   'application.actions.columnSetting': '列设置',
+
+  'application.edit.showName': '名称',
 };

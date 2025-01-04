@@ -25,4 +25,6 @@ export default {
   'application.actions.refresh': 'refresh',
   'application.actions.density': 'density',
   'application.actions.columnSetting': 'columnSetting',
+
+  'application.edit.showName': 'name',
 };

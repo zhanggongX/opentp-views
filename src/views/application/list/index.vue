@@ -58,12 +58,16 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary">
+            <a-button type="primary" @click="showAppEdit">
               <template #icon>
                 <icon-plus />
               </template>
               {{ $t('application.operation.create') }}
             </a-button>
+            <AppEdit
+              v-model:visible="appEditModelVisible"
+              @submit="appEditSubmit"
+            />
           </a-space>
         </a-col>
         <a-col
@@ -152,16 +156,21 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, reactive, watch, nextTick } from 'vue';
+  import { computed, nextTick, reactive, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import useLoading from '@/hooks/loading';
   import { Pagination } from '@/types/global';
-  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import cloneDeep from 'lodash/cloneDeep';
   import Sortable from 'sortablejs';
-  import { AppParams, AppRecord, queryApps } from '@/api/application';
-  import Edit from "@/views/application/list/components/edit.vue";
+  import {
+    AppEditParams,
+    applicationEdit,
+    AppParams,
+    AppRecord,
+    queryApps,
+  } from '@/api/application';
+  import AppEdit from '@/views/application/list/components/application-edit.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
@@ -312,6 +321,33 @@
           },
         });
       });
+    }
+  };
+
+  // 是否显示编辑框
+  const appEditModelVisible = ref(false);
+
+  // 显示编辑框
+  const showAppEdit = () => {
+    appEditModelVisible.value = true;
+  };
+
+  // 处理提交事件
+  const appEditSubmit = (formData: { showName: string; appName: string }) => {
+    editSubmit(formData);
+    appEditModelVisible.value = false;
+    fetchData();
+  };
+
+  const editSubmit = async (params: AppEditParams) => {
+    setLoading(true);
+    try {
+      const { data } = await applicationEdit(params);
+      console.log(data);
+    } catch (err) {
+      // you can report use errorHandler or other
+    } finally {
+      setLoading(false);
     }
   };
 
