@@ -13,22 +13,22 @@
             <a-row :gutter="16">
               <a-col :span="8">
                 <a-form-item
-                  field="number"
+                  field="appName"
                   :label="$t('application.form.appName')"
                 >
                   <a-input
-                    v-model="formModel.number"
+                    v-model="formModel.appName"
                     :placeholder="$t('application.form.appName.placeholder')"
                   />
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item
-                  field="name"
+                  field="appKey"
                   :label="$t('application.form.appKey')"
                 >
                   <a-input
-                    v-model="formModel.name"
+                    v-model="formModel.appKey"
                     :placeholder="$t('application.form.appKey.placeholder')"
                   />
                 </a-form-item>
@@ -64,7 +64,7 @@
               </template>
               {{ $t('application.operation.create') }}
             </a-button>
-            <AppEdit
+            <AppCreate
               v-model:visible="appEditModelVisible"
               @submit="appEditSubmit"
             />
@@ -144,9 +144,17 @@
         :size="size"
         @page-change="onPageChange"
       >
-        <template #operations>
+        <template #operations="{ record }">
           <a-button v-permission="['admin']" type="text" size="small">
             {{ $t('application.columns.operations.edit') }}
+          </a-button>
+          <a-button
+            v-permission="['admin']"
+            type="text"
+            size="small"
+            @click="handleDelete(record.appKey)"
+            status="danger"
+          >
             {{ $t('application.columns.operations.delete') }}
           </a-button>
         </template>
@@ -165,20 +173,21 @@
   import Sortable from 'sortablejs';
   import {
     AppEditParams,
+    applicationDelete,
     applicationEdit,
     AppParams,
     AppRecord,
     queryApps,
   } from '@/api/application';
-  import AppEdit from '@/views/application/list/components/application-edit.vue';
+  import AppCreate from '@/views/application/list/components/application-add.vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
 
   const generateFormModel = () => {
     return {
-      showName: '',
       appName: '',
+      appKey: '',
     };
   };
   const { loading, setLoading } = useLoading(true);
@@ -343,7 +352,22 @@
     setLoading(true);
     try {
       const { data } = await applicationEdit(params);
-      console.log(data);
+    } catch (err) {
+      // you can report use errorHandler or other
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = (appKey: string) => {
+    submitDelete(appKey);
+    fetchData();
+  };
+
+  const submitDelete = async (appKey: string) => {
+    setLoading(true);
+    try {
+      const { data } = await applicationDelete(appKey);
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
@@ -359,7 +383,6 @@
         item.checked = true;
       });
       showColumns.value = cloneDeep(cloneColumns.value);
-      console.log(showColumns.value);
     },
     { deep: true, immediate: true }
   );

@@ -2,12 +2,12 @@
 <template>
   <a-modal
     :visible="visible"
-    title="Application Edit"
+    :title="$t('application.create.title')"
     @cancel="handleCancel"
     @before-ok="handleBeforeOk"
   >
     <a-form :model="form">
-      <a-form-item field="name" :label="$t('application.edit.showName')">
+      <a-form-item field="name" :label="$t('application.create.showName')">
         <a-input v-model="form.showName" />
       </a-form-item>
       <a-form-item field="name" label="appName" size="small">

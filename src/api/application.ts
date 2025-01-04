@@ -44,3 +44,7 @@ export function queryApps(params: AppParams) {
 export function applicationEdit(params: AppEditParams) {
   return axios.post<AppEditRes>('/api/applications/', params);
 }
+
+export function applicationDelete(appKey: string) {
+  return axios.delete<AppEditRes>(`/api/applications/${appKey}`);
+}

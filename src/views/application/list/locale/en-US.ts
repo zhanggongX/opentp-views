@@ -1,5 +1,5 @@
 export default {
-  'menu.application.list': 'app list',
+  'menu.application.list': 'Application List',
   'application.form.appName': 'appName:',
   'application.form.appName.placeholder': 'Please enter application name',
   'application.form.appKey': 'appKey:',
@@ -26,5 +26,6 @@ export default {
   'application.actions.density': 'density',
   'application.actions.columnSetting': 'columnSetting',
 
-  'application.edit.showName': 'name',
+  'application.create.showName': 'showName',
+  'application.create.title': 'Application Create',
 };

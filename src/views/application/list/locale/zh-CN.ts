@@ -1,7 +1,7 @@
 export default {
   'menu.application.list': '应用列表',
-  'application.form.appName': '应用名称:',
-  'application.form.appName.placeholder': '请输入应用名称',
+  'application.form.appName': 'appName:',
+  'application.form.appName.placeholder': '请输入appName',
   'application.form.appKey': 'appKey:',
   'application.form.appKey.placeholder': '请输入appKey',
   'application.operation.create': '新建',
@@ -27,5 +27,6 @@ export default {
   'application.actions.density': '密度',
   'application.actions.columnSetting': '列设置',
 
-  'application.edit.showName': '名称',
+  'application.create.showName': '名称',
+  'application.create.title': '创建应用',
 };
