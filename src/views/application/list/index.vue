@@ -58,15 +58,15 @@
       <a-row style="margin-bottom: 16px">
         <a-col :span="12">
           <a-space>
-            <a-button type="primary" @click="showAppEdit">
+            <a-button type="primary" @click="showAppCreate">
               <template #icon>
                 <icon-plus />
               </template>
               {{ $t('application.operation.create') }}
             </a-button>
             <AppCreate
-              v-model:visible="appEditModelVisible"
-              @submit="appEditSubmit"
+              v-model:visible="appCreateModelVisible"
+              @submit="appCreateSubmit"
             />
           </a-space>
         </a-col>
@@ -334,17 +334,17 @@
   };
 
   // 是否显示编辑框
-  const appEditModelVisible = ref(false);
+  const appCreateModelVisible = ref(false);
 
   // 显示编辑框
-  const showAppEdit = () => {
-    appEditModelVisible.value = true;
+  const showAppCreate = () => {
+    appCreateModelVisible.value = true;
   };
 
   // 处理提交事件
-  const appEditSubmit = (formData: { showName: string; appName: string }) => {
+  const appCreateSubmit = (formData: { showName: string; appName: string }) => {
     editSubmit(formData);
-    appEditModelVisible.value = false;
+    appCreateModelVisible.value = false;
     fetchData();
   };
 
