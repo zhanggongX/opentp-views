@@ -145,13 +145,19 @@
         @page-change="onPageChange"
       >
         <template #operations="{ record }">
-          <a-button v-permission="['admin']" type="text" size="small" @click="openAppEdit">
+          <a-button
+            v-permission="['admin']"
+            type="text"
+            size="small"
+            @click="showAppEdit(record)"
+          >
             {{ $t('application.columns.operations.edit') }}
           </a-button>
-          <AppEdit ref="appEditRef">
-            <template #title>Custom Title</template>
-            <div>Drawer Content</div>
-          </AppEdit>
+          <AppEdit
+            v-model:visible="appEditDrawerVisible"
+            v-model="appEditFormData"
+            @submit="appEditSubmit"
+          />
           <a-button
             v-permission="['admin']"
             type="text"
@@ -178,6 +184,7 @@
   import {
     AppCreateOrEditParams,
     applicationDelete,
+    applicationCreate,
     applicationEdit,
     AppListParams,
     AppRecord,
@@ -185,6 +192,7 @@
   } from '@/api/application';
   import AppCreate from '@/views/application/list/components/application-add.vue';
   import AppEdit from '@/views/application/list/components/application-edit.vue';
+  import { Message } from '@arco-design/web-vue';
 
   type SizeProps = 'mini' | 'small' | 'medium' | 'large';
   type Column = TableColumnData & { checked?: true };
@@ -380,10 +388,43 @@
     }
   };
 
-  const appEditRef = ref();
+  const appEditDrawerVisible = ref(false);
+  // 显示编辑框
+  const showAppEdit = (record: AppRecord) => {
+    appEditFormData.value = { ...record };
+    appEditDrawerVisible.value = true;
+  };
 
-  const openAppEdit = () => {
-    appEditRef.value?.open();
+  const appEditFormData = ref({
+    showName: '',
+    appName: '',
+    appKey: '',
+    appSecret: '',
+  });
+
+  // 处理提交事件
+  const appEditSubmit = (formData: {
+    showName: string;
+    appName: string;
+    appKey: string;
+  }) => {
+    editSubmit(formData, formData.appKey);
+    appEditDrawerVisible.value = false;
+    fetchData();
+  };
+
+  const editSubmit = async (params: AppCreateOrEditParams, appKey: string) => {
+    setLoading(true);
+    try {
+      const { data } = await applicationEdit(params, appKey);
+    } catch (err) {
+      Message.error({
+        content: 'editSubmit Request Error',
+        duration: 5 * 1000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   watch(

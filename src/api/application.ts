@@ -41,8 +41,12 @@ export function queryApps(params: AppListParams) {
   });
 }
 
-export function applicationEdit(params: AppCreateOrEditParams) {
+export function applicationCreate(params: AppCreateOrEditParams) {
   return axios.post<AppCreateOrEditRes>('/api/applications/', params);
+}
+
+export function applicationEdit(params: AppCreateOrEditParams, appKey: string) {
+  return axios.put<AppCreateOrEditRes>(`/api/applications/${appKey}`, params);
 }
 
 export function applicationDelete(appKey: string) {

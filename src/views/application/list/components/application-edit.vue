@@ -1,47 +1,75 @@
 <template>
   <a-drawer
-    :width="width"
+    :width="400"
     :visible="visible"
-    :unmount-on-close="unmountOnClose"
+    :mask="false"
+    unmount-on-close
     @cancel="handleCancel"
-    @ok="handleOk"
   >
-    <template #title>
-      <slot name="title">Default Title</slot>
+    <template #title> {{ $t('application.edit.title') }}</template>
+    <a-form :model="form">
+      <a-form-item field="showName" :label="$t('application.create.showName')">
+        <a-input v-model="form.showName" />
+      </a-form-item>
+      <a-form-item field="appName" label="appName">
+        <a-input v-model="form.appName" />
+      </a-form-item>
+      <a-form-item field="appKey" label="appKey" disabled>
+        <a-input v-model="form.appKey" />
+      </a-form-item>
+      <a-form-item field="appSecret" label="appSecret" disabled>
+        <a-input v-model="form.appSecret" />
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <a-button @click="handleCancel">Cancel</a-button>
+      <a-button type="primary" @click="handleSubmit">Submit</a-button>
     </template>
-    <slot></slot>
   </a-drawer>
 </template>
 
 <script lang="ts" setup>
-  import { defineProps, defineEmits, ref, defineExpose } from 'vue';
+  import { defineProps, defineEmits, ref, watch } from 'vue';
 
   const props = defineProps({
-    width: { type: Number, default: 340 },
-    unmountOnClose: { type: Boolean, default: true },
+    visible: Boolean, // 控制抽屉显示
+    modelValue: Object, // 传递表单数据
   });
 
-  const visible = ref(false);
+  const emit = defineEmits(['update:visible', 'submit']);
 
-  const emit = defineEmits(['ok', 'cancel']);
+  const form = ref({
+    showName: '',
+    appName: '',
+    appKey: '',
+    appSecret: '',
+  });
 
-  const open = () => {
-    visible.value = true;
-  };
+  // 监听父组件传入的数据，并同步到表单
+  watch(
+    () => props.modelValue,
+    (newValue) => {
+      if (newValue) {
+        // form.value = { ...newValue };
+        Object.assign(form.value, newValue);
+      }
+    },
+    { deep: true, immediate: true }
+  );
 
-  const close = () => {
-    visible.value = false;
-  };
-
-  const handleOk = () => {
-    emit('ok');
-    close();
-  };
-
+  // 关闭抽屉
   const handleCancel = () => {
-    emit('cancel');
-    close();
+    emit('update:visible', false);
   };
 
-  defineExpose({ open, close });
+  // 提交表单数据
+  const handleSubmit = () => {
+    const submitData = {
+      showName: form.value.showName,
+      appName: form.value.appName,
+      appKey: form.value.appKey,
+    };
+    emit('submit', submitData);
+    emit('update:visible', false);
+  };
 </script>

@@ -29,4 +29,6 @@ export default {
 
   'application.create.showName': '名称',
   'application.create.title': '创建应用',
+
+  'application.edit.title': '编辑应用',
 };

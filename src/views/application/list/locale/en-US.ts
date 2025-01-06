@@ -28,4 +28,6 @@ export default {
 
   'application.create.showName': 'showName',
   'application.create.title': 'Application Create',
+
+  'application.edit.title': 'Application Edit',
 };
