@@ -162,8 +162,8 @@
             v-permission="['admin']"
             type="text"
             size="small"
-            @click="handleDelete(record.appKey)"
             status="danger"
+            @click="handleDelete(record.appKey)"
           >
             {{ $t('application.columns.operations.delete') }}
           </a-button>
@@ -364,7 +364,7 @@
   const createSubmit = async (params: AppCreateOrEditParams) => {
     setLoading(true);
     try {
-      const { data } = await applicationEdit(params);
+      const { data } = await applicationCreate(params);
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
