@@ -28,6 +28,7 @@ import localeUserInfo from '@/views/user/info/locale/zh-CN';
 import localeUserSetting from '@/views/user/setting/locale/zh-CN';
 
 import localeApplicationList from '@/views/application/list/locale/zh-CN';
+import localeApplicationEdit from '@/views/application/detail/locale/zh-CN';
 
 import localeSettings from './zh-CN/settings';
 
@@ -54,6 +55,7 @@ export default {
   ...localeWorkplace,
   ...localeWorkplace1,
   ...localeApplicationList,
+  ...localeApplicationEdit,
   ...localeMonitor,
   ...localeSearchTable,
   ...localeCardList,

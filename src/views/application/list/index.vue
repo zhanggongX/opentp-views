@@ -373,8 +373,9 @@
   };
 
   const handleDelete = (appKey: string) => {
-    submitDelete(appKey);
-    fetchData();
+    submitDelete(appKey).then(() => {
+      fetchData();
+    });
   };
 
   const submitDelete = async (appKey: string) => {

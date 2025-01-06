@@ -22,6 +22,16 @@ const APPLICATION: AppRouteRecordRaw = {
         roles: ['*'],
       },
     },
+    {
+      path: 'detail',
+      name: 'ApplicationDetail',
+      component: () => import('@/views/application/detail/index.vue'),
+      meta: {
+        locale: 'menu.application.detail',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
   ],
 };
 

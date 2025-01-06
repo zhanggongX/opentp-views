@@ -28,6 +28,7 @@ import localeUserInfo from '@/views/user/info/locale/en-US';
 import localeUserSetting from '@/views/user/setting/locale/en-US';
 
 import localeApplicationList from '@/views/application/list/locale/en-US';
+import localeApplicationEdit from '@/views/application/detail/locale/en-US';
 
 import localeSettings from './en-US/settings';
 
@@ -54,6 +55,7 @@ export default {
   ...localeWorkplace,
   ...localeWorkplace1,
   ...localeApplicationList,
+  ...localeApplicationEdit,
   ...localeMonitor,
   ...localeSearchTable,
   ...localeCardList,
