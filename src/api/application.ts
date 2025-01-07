@@ -10,6 +10,19 @@ export interface AppRecord {
   // createdTime: string;
 }
 
+export interface ConnectRecord {
+  host: string;
+  pid: string;
+  appKey: string;
+  appSecret: string;
+}
+
+export interface ConnectListRes {
+  code: number;
+  message: string;
+  list: ConnectRecord[];
+}
+
 export interface AppListRes {
   code: number;
   message: string;
@@ -41,6 +54,10 @@ export function queryApps(params: AppListParams) {
   });
 }
 
+export function queryAllApps() {
+  return axios.get<AppListRes>('/api/applications/');
+}
+
 export function applicationCreate(params: AppCreateOrEditParams) {
   return axios.post<AppCreateOrEditRes>('/api/applications/', params);
 }
@@ -51,4 +68,16 @@ export function applicationEdit(params: AppCreateOrEditParams, appKey: string) {
 
 export function applicationDelete(appKey: string) {
   return axios.delete<AppCreateOrEditRes>(`/api/applications/${appKey}`);
+}
+
+export function queryConnects(appKey: string) {
+  return axios.get<ConnectListRes>('/api/connections/', {
+    params: { appKey },
+  });
+}
+
+export function queryThreadPools(ipAndPid: string) {
+  return axios.delete<ConnectListRes>('/api/thread-pools/', {
+    params: { ipAndPid },
+  });
 }

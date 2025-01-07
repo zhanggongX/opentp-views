@@ -2,41 +2,46 @@
   <div class="container">
     <Breadcrumb :items="['menu.list', 'menu.list.searchTable']" />
     <a-card class="general-card" :title="$t('menu.list.searchTable')">
-      <a-row>
-        <a-col :flex="1">
-          <a-form
-            :model="formModel"
-            :label-col-props="{ span: 6 }"
-            :wrapper-col-props="{ span: 18 }"
-            label-align="left"
+      <a-row :gutter="18">
+        <a-col :span="8">
+          <a-form-item field="apps" :label="$t('searchTable.form.contentType')">
+            <a-select
+              v-model="selectedApps"
+              :options="filterApps"
+              :placeholder="$t('searchTable.form.selectDefault')"
+              @change="handleAppsChange"
+              :loading="loading.apps"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item
+            field="ipAndPid"
+            :label="$t('searchTable.form.filterType')"
           >
-            <a-row :gutter="18">
-              <a-col :span="8">
-                <a-form-item
-                  field="contentType"
-                  :label="$t('searchTable.form.contentType')"
-                >
-                  <a-select
-                    v-model="formModel.contentType"
-                    :options="contentTypeOptions"
-                    :placeholder="$t('searchTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-              <a-col :span="8">
-                <a-form-item
-                  field="filterType"
-                  :label="$t('searchTable.form.filterType')"
-                >
-                  <a-select
-                    v-model="formModel.filterType"
-                    :options="filterTypeOptions"
-                    :placeholder="$t('searchTable.form.selectDefault')"
-                  />
-                </a-form-item>
-              </a-col>
-            </a-row>
-          </a-form>
+            <a-select
+              v-model="selectedIpAndPid"
+              :options="filterIpAndPid"
+              @change="handleIpAndPidChange"
+              :loading="loading.ipAndPid"
+              :disabled="!selectedApps"
+              :placeholder="$t('searchTable.form.selectDefault')"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="8">
+          <a-form-item
+            field="tpName"
+            :label="$t('searchTable.form.filterType')"
+          >
+            <a-select
+              v-model="selectedTpName"
+              :options="filterTpName"
+              :disabled="!selectedIpAndPid"
+              :loading="loading.tpName"
+              :placeholder="$t('searchTable.form.selectDefault')"
+            />
+          </a-form-item>
         </a-col>
       </a-row>
       <a-divider style="margin-top: 0" />
@@ -47,53 +52,115 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, reactive, watch, nextTick } from 'vue';
+  import { computed, ref, watch, nextTick, onMounted } from 'vue';
   import { useI18n } from 'vue-i18n';
 
   import DataOverview from '@/views/application/detail/components/data-overview.vue';
-  import type { SelectOptionData } from "@arco-design/web-vue/es/select/interface";
+  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
+  import {
+    queryAllApps,
+    queryConnects,
+    queryThreadPools,
+  } from '@/api/application';
+  import { Message } from '@arco-design/web-vue';
 
   const { t } = useI18n();
 
-  const generateFormModel = () => {
-    return {
-      number: '',
-      name: '',
-      contentType: '',
-      filterType: '',
-      createdTime: [],
-      status: '',
-    };
+  // 选中的值
+  const selectedApps = ref<string | null>(null);
+  const selectedIpAndPid = ref<string | null>(null);
+  const selectedTpName = ref<string | null>(null);
+
+  // 选项数据
+  const filterApps = ref<SelectOptionData[]>([]);
+  const filterIpAndPid = ref<SelectOptionData[]>([]);
+  const filterTpName = ref<SelectOptionData[]>([]);
+
+  // 加载状态
+  const loading = ref({
+    apps: false,
+    ipAndPid: false,
+    tpName: false,
+  });
+
+  // 获取 Apps 数据
+  const fetchAppsOptions = async () => {
+    // loading.value.item = true;
+    try {
+      const { data } = await queryAllApps();
+      const vals = data.list;
+      for (let i = 0; i < vals.length; i += 1) {
+        filterApps.value.push({
+          label: vals[i].showName,
+          value: vals[i].appKey,
+        });
+      }
+    } catch (err) {
+      Message.error('获取Apps数据失败');
+    } finally {
+      // loading.value.apps = false;
+    }
   };
 
-  const contentTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('searchTable.form.contentType.img'),
-      value: 'img',
-    },
-    {
-      label: t('searchTable.form.contentType.horizontalVideo'),
-      value: 'horizontalVideo',
-    },
-    {
-      label: t('searchTable.form.contentType.verticalVideo'),
-      value: 'verticalVideo',
-    },
-  ]);
+  // 获取 ipAndPid 数据
+  const fetchIpAndPid = async (appKey: string) => {
+    // loading.value.subcategory = true;
+    try {
+      const { data } = await queryConnects(appKey); // 请求后端 API
+      console.log(data);
+      const vals = data.list;
+      for (let i = 0; i < vals.length; i += 1) {
+        filterIpAndPid.value.push({
+          label: vals[i].host,
+          value: vals[i].pid,
+        });
+      }
+    } catch (error) {
+      Message.error('获取TpAndPid失败');
+    } finally {
+      // loading.value.subcategory = false;
+    }
+  };
 
-  const filterTypeOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: t('searchTable.form.filterType.artificial'),
-      value: 'artificial',
-    },
-    {
-      label: t('searchTable.form.filterType.rules'),
-      value: 'rules',
-    },
-  ]);
+  // 获取子类别
+  const fetchTpNames = async (ipAndPid: string) => {
+    // loading.value.subcategory = true;
+    try {
+      const { data } = await queryThreadPools(ipAndPid); // 请求后端 API
+      const vals = data.list;
+      for (let i = 0; i < vals.length; i += 1) {
+        filterIpAndPid.value.push({
+          label: vals[i].host,
+          value: vals[i].pid,
+        });
+      }
+    } catch (error) {
+      Message.error('获取TpAndPid失败');
+    } finally {
+      // loading.value.subcategory = false;
+    }
+  };
 
-  const formModel = ref(generateFormModel());
-  // const renderData = ref<PolicyRecord[]>([]);
+  const handleAppsChange = async () => {
+    selectedIpAndPid.value = null;
+    selectedTpName.value = null;
+    filterIpAndPid.value = [];
+    filterTpName.value = [];
+    if (selectedApps.value) {
+      await fetchIpAndPid(selectedApps.value);
+    }
+  };
+
+  const handleIpAndPidChange = async () => {
+    selectedTpName.value = null;
+    filterTpName.value = [];
+    if (selectedIpAndPid.value) {
+      await fetchTpNames(selectedIpAndPid.value);
+    }
+  };
+
+  // 组件挂载时获取类别数据
+  onMounted(fetchAppsOptions);
 </script>
 
 <script lang="ts">
