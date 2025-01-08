@@ -58,6 +58,8 @@
   import DataOverview from '@/views/application/detail/components/data-overview.vue';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import {
+    ConnectRecord,
+    ConnectListRes,
     queryAllApps,
     queryConnects,
     queryThreadPools,
@@ -107,14 +109,10 @@
     // loading.value.subcategory = true;
     try {
       const { data } = await queryConnects(appKey); // 请求后端 API
-      console.log(data);
-      const vals = data.list;
-      for (let i = 0; i < vals.length; i += 1) {
-        filterIpAndPid.value.push({
-          label: vals[i].host,
-          value: vals[i].pid,
-        });
-      }
+      filterIpAndPid.value = data.map((item) => ({
+        label: `${item.host}-${item.pid}`, // 使用模板字符串拼接
+        value: `${item.host}-${item.pid}`,
+      }));
     } catch (error) {
       Message.error('获取TpAndPid失败');
     } finally {
@@ -127,13 +125,12 @@
     // loading.value.subcategory = true;
     try {
       const { data } = await queryThreadPools(ipAndPid); // 请求后端 API
-      const vals = data.list;
-      for (let i = 0; i < vals.length; i += 1) {
-        filterIpAndPid.value.push({
-          label: vals[i].host,
-          value: vals[i].pid,
-        });
-      }
+      filterTpName.value = data.map((e) => {
+        return {
+          label: e,
+          value: e,
+        };
+      });
     } catch (error) {
       Message.error('获取TpAndPid失败');
     } finally {

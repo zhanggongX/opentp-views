@@ -17,12 +17,6 @@ export interface ConnectRecord {
   appSecret: string;
 }
 
-export interface ConnectListRes {
-  code: number;
-  message: string;
-  list: ConnectRecord[];
-}
-
 export interface AppListRes {
   code: number;
   message: string;
@@ -71,13 +65,13 @@ export function applicationDelete(appKey: string) {
 }
 
 export function queryConnects(appKey: string) {
-  return axios.get<ConnectListRes>('/api/connections/', {
+  return axios.get<ConnectRecord[]>('/api/connections/', {
     params: { appKey },
   });
 }
 
 export function queryThreadPools(ipAndPid: string) {
-  return axios.delete<ConnectListRes>('/api/thread-pools/', {
+  return axios.get<string[]>('/api/thread-pools/', {
     params: { ipAndPid },
   });
 }
