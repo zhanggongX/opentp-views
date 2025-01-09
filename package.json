@@ -1,9 +1,9 @@
 {
-  "name": "arco-design-pro-vue",
-  "description": "Arco Design Pro for Vue",
+  "name": "opentp-view",
+  "description": "the pages for open-tp",
   "version": "1.0.0",
   "private": true,
-  "author": "ArcoDesign Team",
+  "author": "zhanggong",
   "license": "MIT",
   "scripts": {
     "dev": "vite --config ./config/vite.config.dev.ts",
