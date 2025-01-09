@@ -1,10 +1,6 @@
 <template>
   <a-spin :loading="loading" style="width: 100%">
-    <a-card
-      class="general-card"
-      :title="$t('multiDAnalysis.card.title.dataOverview')"
-      style="padding: 2px"
-    >
+    <a-card class="general-card" style="padding: 2px">
       <a-row justify="space-between">
         <a-col v-for="(item, idx) in renderData" :key="idx" :span="6">
           <a-statistic
@@ -49,8 +45,8 @@
         (el) => `<div class="content-panel">
         <p>
           <span style="background-color: ${
-          el.color
-        }" class="tooltip-item-icon"></span><span>${el.seriesName}</span>
+            el.color
+          }" class="tooltip-item-icon"></span><span>${el.seriesName}</span>
         </p>
         <span class="tooltip-value">${el.value?.toLocaleString() ?? ''}</span>
       </div>`
@@ -291,11 +287,13 @@
       color: rgb(var(--gray-10));
       font-weight: bold;
     }
+
     .arco-statistic-value {
       display: flex;
       align-items: center;
     }
   }
+
   .statistic-prefix {
     display: inline-block;
     width: 32px;

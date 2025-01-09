@@ -1,9 +1,12 @@
 export default {
   'menu.application.detail': '应用详情',
-  'application.form.appName': 'appName:',
-  'application.form.appName.placeholder': '请输入appName',
-  'application.form.appKey': 'appKey:',
-  'application.form.appKey.placeholder': '请输入appKey',
+  'application.select.showName': '名称:',
+  'application.select.appName.placeholder': '请选择App名称',
+  'application.select.ipAndPid': 'IP和实例ID:',
+  'application.select.ipAndPid.placeholder': '请选择IP和实例ID',
+  'application.select.tpName': '线程池名称:',
+  'application.select.tpName.placeholder': '请选择线程池',
+
   'application.operation.create': '新建',
   // change
   'application.form.search': '查询',

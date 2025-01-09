@@ -4,42 +4,39 @@
     <a-card class="general-card" :title="$t('menu.list.searchTable')">
       <a-row :gutter="18">
         <a-col :span="8">
-          <a-form-item field="apps" :label="$t('searchTable.form.contentType')">
+          <a-form-item field="apps" :label="$t('application.select.showName')">
             <a-select
               v-model="selectedApps"
               :options="filterApps"
-              :placeholder="$t('searchTable.form.selectDefault')"
-              @change="handleAppsChange"
+              :placeholder="$t('application.select.appName.placeholder')"
               :loading="loading.apps"
+              @change="handleAppsChange"
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
           <a-form-item
             field="ipAndPid"
-            :label="$t('searchTable.form.filterType')"
+            :label="$t('application.select.ipAndPid')"
           >
             <a-select
               v-model="selectedIpAndPid"
               :options="filterIpAndPid"
-              @change="handleIpAndPidChange"
               :loading="loading.ipAndPid"
               :disabled="!selectedApps"
-              :placeholder="$t('searchTable.form.selectDefault')"
+              :placeholder="$t('application.select.ipAndPid.placeholder')"
+              @change="handleIpAndPidChange"
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            field="tpName"
-            :label="$t('searchTable.form.filterType')"
-          >
+          <a-form-item field="tpName" :label="$t('application.select.tpName')">
             <a-select
               v-model="selectedTpName"
               :options="filterTpName"
               :disabled="!selectedIpAndPid"
               :loading="loading.tpName"
-              :placeholder="$t('searchTable.form.selectDefault')"
+              :placeholder="$t('application.select.tpName.placeholder')"
             />
           </a-form-item>
         </a-col>
@@ -58,8 +55,6 @@
   import DataOverview from '@/views/application/detail/components/data-overview.vue';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import {
-    ConnectRecord,
-    ConnectListRes,
     queryAllApps,
     queryConnects,
     queryThreadPools,
@@ -87,7 +82,7 @@
 
   // 获取 Apps 数据
   const fetchAppsOptions = async () => {
-    // loading.value.item = true;
+    loading.value.apps = true;
     try {
       const { data } = await queryAllApps();
       const vals = data.list;
@@ -100,13 +95,13 @@
     } catch (err) {
       Message.error('获取Apps数据失败');
     } finally {
-      // loading.value.apps = false;
+      loading.value.apps = false;
     }
   };
 
   // 获取 ipAndPid 数据
   const fetchIpAndPid = async (appKey: string) => {
-    // loading.value.subcategory = true;
+    loading.value.ipAndPid = true;
     try {
       const { data } = await queryConnects(appKey); // 请求后端 API
       filterIpAndPid.value = data.map((item) => ({
@@ -116,13 +111,13 @@
     } catch (error) {
       Message.error('获取TpAndPid失败');
     } finally {
-      // loading.value.subcategory = false;
+      loading.value.ipAndPid = false;
     }
   };
 
   // 获取子类别
   const fetchTpNames = async (ipAndPid: string) => {
-    // loading.value.subcategory = true;
+    loading.value.tpName = true;
     try {
       const { data } = await queryThreadPools(ipAndPid); // 请求后端 API
       filterTpName.value = data.map((e) => {
@@ -134,7 +129,7 @@
     } catch (error) {
       Message.error('获取TpAndPid失败');
     } finally {
-      // loading.value.subcategory = false;
+      loading.value.tpName = false;
     }
   };
 

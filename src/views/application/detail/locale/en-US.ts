@@ -1,9 +1,12 @@
 export default {
   'menu.application.detail': 'Application Detail',
-  'application.form.appName': 'appName:',
-  'application.form.appName.placeholder': 'Please enter application name',
-  'application.form.appKey': 'appKey:',
-  'application.form.appKey.placeholder': 'Please enter application key',
+  'application.select.showName': 'showName:',
+  'application.select.appName.placeholder': 'Please select application name',
+  'application.select.ipAndPid': 'IP And Pid:',
+  'application.select.ipAndPid.placeholder': 'Please select IP and Pid key',
+  'application.select.tpName': 'Thread Pool Name:',
+  'application.select.tpName.placeholder': 'Please select thread pool',
+
   'application.operation.create': 'create',
   'application.form.search': 'Search',
   'application.form.reset': 'Reset',
