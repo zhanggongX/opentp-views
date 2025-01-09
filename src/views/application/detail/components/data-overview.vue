@@ -33,11 +33,11 @@
   import { computed, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { LineSeriesOption } from 'echarts';
-  import { queryDataOverview } from '@/api/visualization';
   import useLoading from '@/hooks/loading';
   import { ToolTipFormatterParams } from '@/types/echarts';
   import useThemes from '@/hooks/themes';
   import useChartOption from '@/hooks/chart-option';
+  import { threadPoolDataOverview } from '@/api/application';
 
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
     return items
@@ -94,23 +94,24 @@
   const { t } = useI18n();
   const { loading, setLoading } = useLoading(true);
   const { isDark } = useThemes();
+
   const renderData = computed(() => [
     {
-      title: t('multiDAnalysis.dataOverview.contentProduction'),
+      title: t('multiDAnalysis.dataOverview.core'),
       value: 1902,
       prefix: {
-        icon: 'icon-edit',
-        background: isDark.value ? '#593E2F' : '#FFE4BA',
-        iconColor: isDark.value ? '#F29A43' : '#F77234',
+        icon: 'icon-heart-fill',
+        background: isDark.value ? '#3D5A62' : '#E8FFFB',
+        iconColor: isDark.value ? '#6ED1CE' : '#33D1C9',
       },
     },
     {
-      title: t('multiDAnalysis.dataOverview.contentClick'),
+      title: t('multiDAnalysis.dataOverview.max'),
       value: 2445,
       prefix: {
-        icon: 'icon-thumb-up',
-        background: isDark.value ? '#3D5A62' : '#E8FFFB',
-        iconColor: isDark.value ? '#6ED1CE' : '#33D1C9',
+        icon: 'icon-star-fill',
+        background: isDark.value ? '#593E2F' : '#FFE4BA',
+        iconColor: isDark.value ? '#F29A43' : '#F77234',
       },
     },
     {
@@ -132,6 +133,7 @@
       },
     },
   ]);
+
   const xAxis = ref<string[]>([]);
   const contentProductionData = ref<number[]>([]);
   const contentClickData = ref<number[]>([]);
@@ -260,7 +262,7 @@
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { data } = await queryDataOverview();
+      const { data } = await threadPoolDataOverview();
       xAxis.value = data.xAxis;
       data.data.forEach((el) => {
         if (el.name === '内容生产量') {

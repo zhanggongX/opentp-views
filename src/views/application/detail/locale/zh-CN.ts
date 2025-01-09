@@ -6,6 +6,15 @@ export default {
   'application.select.ipAndPid.placeholder': '请选择IP和实例ID',
   'application.select.tpName': '线程池名称:',
   'application.select.tpName.placeholder': '请选择线程池',
+  'multiDAnalysis.dataOverview.core': '核心线程数',
+  'multiDAnalysis.dataOverview.max': '最大线程数',
+  'multiDAnalysis.dataOverview.queue': '队列',
+  'multiDAnalysis.dataOverview.active': '活跃线程数',
+  'multiDAnalysis.dataOverview.completed': '已完成任务数',
+  'multiDAnalysis.dataOverview.task': '任务数',
+  'multiDAnalysis.dataOverview.rejected': '拒绝任务数',
+  'multiDAnalysis.dataOverview.rejected.tip': '拒绝任务数',
+  'multiDAnalysis.dataOverview.rejected.tip.content': '拒绝任务数',
 
   'application.operation.create': '新建',
   // change

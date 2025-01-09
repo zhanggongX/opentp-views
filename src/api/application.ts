@@ -75,3 +75,12 @@ export function queryThreadPools(ipAndPid: string) {
     params: { ipAndPid },
   });
 }
+
+export interface DataOverviewRes {
+  xAxis: string[];
+  data: Array<{ name: string; value: number[]; count: number }>;
+}
+
+export function threadPoolDataOverview() {
+  return axios.post<DataOverviewRes>('/api/data-overview');
+}
