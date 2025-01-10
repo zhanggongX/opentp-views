@@ -90,17 +90,7 @@ export function queryThreadPools(ipAndPid: string) {
 export interface ThreadPoolsData {
   coreSize: number;
   maxSize: number;
-}
-
-export interface ThreadPoolsChartData {
-  name: string;
-  value: number[];
-  count: number;
-}
-
-export interface ThreadPoolsChartRes {
-  xAxis: string[];
-  data: ThreadPoolsChartData[];
+  reportTime: string;
 }
 
 export function threadPoolDataOverview(ipAndPid: string, tpName: string) {

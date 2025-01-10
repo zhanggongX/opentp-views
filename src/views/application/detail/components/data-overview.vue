@@ -44,10 +44,7 @@
   import { ToolTipFormatterParams } from '@/types/echarts';
   import useThemes from '@/hooks/themes';
   import useChartOption from '@/hooks/chart-option';
-  import {
-    threadPoolDataOverview,
-    ThreadPoolsChartData,
-  } from '@/api/application';
+  import { threadPoolDataOverview, ThreadPoolsData } from '@/api/application';
 
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
     return items
@@ -200,7 +197,7 @@
         axisLabel: {
           formatter(value: number, idx: number) {
             if (idx === 0) return String(value);
-            return `${value / 1000}k`;
+            return `${value}个`;
           },
         },
         splitLine: {
@@ -221,30 +218,7 @@
         className: 'echarts-tooltip-diy',
       },
       graphic: {
-        elements: [
-          {
-            type: 'text',
-            left: '2.6%',
-            bottom: '18',
-            style: {
-              text: '12.10',
-              textAlign: 'center',
-              fill: '#4E5969',
-              fontSize: 12,
-            },
-          },
-          {
-            type: 'text',
-            right: '0',
-            bottom: '18',
-            style: {
-              text: '12.17',
-              textAlign: 'center',
-              fill: '#4E5969',
-              fontSize: 12,
-            },
-          },
-        ],
+        elements: [],
       },
       series: [
         generateSeries('核心线程数', '#722ED1', '#F5E8FF', coreSize.value),
@@ -253,7 +227,7 @@
     };
   });
 
-  const threadPoolsChartData = ref<ThreadPoolsChartData[]>([]);
+  const threadPoolsDataList = ref<ThreadPoolsData[]>([]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -265,22 +239,18 @@
         props.ipAndPid,
         props.tpName
       );
-      console.log(data);
+      threadPoolsDataList.value.push(data);
+      if (threadPoolsDataList.value.length > 10) {
+        threadPoolsDataList.value.shift();
+      }
 
-      threadPoolsChartData.value.push({})
-
-      // 纵坐标
-      xAxis.value = new Array(8).fill(0).map((_item, index) => {
-        return `12.1${index}`;
-      });
-      //
-      data.forEach((el) => {
-        if (el.name === '核心线程数') {
-          coreSize.value = el.value;
-        } else if (el.name === '最大线程数') {
-          maxSize.value = el.value;
-        }
-      });
+      // 纵坐标 和 值
+      xAxis.value = new Array(threadPoolsDataList.value.length);
+      for (let i = 0; i < threadPoolsDataList.value.length; i += 1) {
+        xAxis.value[i] = threadPoolsDataList.value[i].reportTime;
+        coreSize.value[i] = threadPoolsDataList.value[i].coreSize;
+        maxSize.value[i] = threadPoolsDataList.value[i].maxSize;
+      }
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
