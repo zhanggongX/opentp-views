@@ -10,6 +10,7 @@
               :options="filterApps"
               :placeholder="$t('application.select.appName.placeholder')"
               :loading="loading.apps"
+              :allow-clear="true"
               @change="handleAppsChange"
             />
           </a-form-item>
@@ -25,6 +26,7 @@
               :loading="loading.ipAndPid"
               :disabled="!selectedApps"
               :placeholder="$t('application.select.ipAndPid.placeholder')"
+              :allow-clear="true"
               @change="handleIpAndPidChange"
             />
           </a-form-item>
@@ -37,13 +39,17 @@
               :disabled="!selectedIpAndPid"
               :loading="loading.tpName"
               :placeholder="$t('application.select.tpName.placeholder')"
+              :allow-clear="true"
             />
           </a-form-item>
         </a-col>
       </a-row>
       <a-divider style="margin-top: 0" />
 
-      <DataOverview />
+      <DataOverview
+        v-model:ip-and-pid="selectedIpAndPid"
+        v-model:tp-name="selectedTpName"
+      />
     </a-card>
   </div>
 </template>

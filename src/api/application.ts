@@ -76,13 +76,35 @@ export function queryThreadPools(ipAndPid: string) {
   });
 }
 
-export interface DataOverviewRes {
+/**
+ * coreSize": 10,
+ *     "maxSize": 20,
+ *     "poolSize": 0,
+ *     "activeCount": 0,
+ *     "completedCount": 0,
+ *     "queueSize": 0,
+ *     "queueLength": 1024,
+ *     "largestPoolSize": 0,
+ *     "threadPoolName": "tp1"
+ */
+export interface ThreadPoolsData {
+  coreSize: number;
+  maxSize: number;
+}
+
+export interface ThreadPoolsChartData {
+  name: string;
+  value: number[];
+  count: number;
+}
+
+export interface ThreadPoolsChartRes {
   xAxis: string[];
-  data: Array<{ name: string; value: number[]; count: number }>;
+  data: ThreadPoolsChartData[];
 }
 
 export function threadPoolDataOverview(ipAndPid: string, tpName: string) {
-  return axios.get<DataOverviewRes>(`/api/thread-pools/${tpName}`, {
+  return axios.get<ThreadPoolsData>(`/api/thread-pools/${tpName}`, {
     params: { ipAndPid },
   });
 }

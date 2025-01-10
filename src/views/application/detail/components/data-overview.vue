@@ -30,14 +30,24 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref } from 'vue';
+  import {
+    computed,
+    defineProps,
+    onMounted,
+    onUnmounted,
+    ref,
+    watch,
+  } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { LineSeriesOption } from 'echarts';
   import useLoading from '@/hooks/loading';
   import { ToolTipFormatterParams } from '@/types/echarts';
   import useThemes from '@/hooks/themes';
   import useChartOption from '@/hooks/chart-option';
-  import { threadPoolDataOverview } from '@/api/application';
+  import {
+    threadPoolDataOverview,
+    ThreadPoolsChartData,
+  } from '@/api/application';
 
   const tooltipItemsHtmlString = (items: ToolTipFormatterParams[]) => {
     return items
@@ -54,6 +64,12 @@
       .reverse()
       .join('');
   };
+
+  // 定义 props
+  const props = defineProps<{
+    ipAndPid: string;
+    tpName: string;
+  }>();
 
   const generateSeries = (
     name: string,
@@ -135,10 +151,8 @@
   ]);
 
   const xAxis = ref<string[]>([]);
-  const contentProductionData = ref<number[]>([]);
-  const contentClickData = ref<number[]>([]);
-  const contentExposureData = ref<number[]>([]);
-  const activeUsersData = ref<number[]>([]);
+  const coreSize = ref<number[]>([]);
+  const maxSize = ref<number[]>([]);
 
   const { chartOption } = useChartOption((dark) => {
     return {
@@ -233,47 +247,39 @@
         ],
       },
       series: [
-        generateSeries(
-          '内容生产量',
-          '#722ED1',
-          '#F5E8FF',
-          contentProductionData.value
-        ),
-        generateSeries(
-          '内容点击量',
-          '#F77234',
-          '#FFE4BA',
-          contentClickData.value
-        ),
-        generateSeries(
-          '内容曝光量',
-          '#33D1C9',
-          '#E8FFFB',
-          contentExposureData.value
-        ),
-        generateSeries(
-          '活跃用户数',
-          '#3469FF',
-          '#E8F3FF',
-          activeUsersData.value
-        ),
+        generateSeries('核心线程数', '#722ED1', '#F5E8FF', coreSize.value),
+        generateSeries('最大线程数', '#F77234', '#FFE4BA', maxSize.value),
       ],
     };
   });
+
+  const threadPoolsChartData = ref<ThreadPoolsChartData[]>([]);
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { data } = await threadPoolDataOverview();
-      xAxis.value = data.xAxis;
-      data.data.forEach((el) => {
-        if (el.name === '内容生产量') {
-          contentProductionData.value = el.value;
-        } else if (el.name === '内容点击量') {
-          contentClickData.value = el.value;
-        } else if (el.name === '内容曝光量') {
-          contentExposureData.value = el.value;
+      if (props.ipAndPid == null || props.tpName == null) {
+        return;
+      }
+      const { data } = await threadPoolDataOverview(
+        props.ipAndPid,
+        props.tpName
+      );
+      console.log(data);
+
+      threadPoolsChartData.value.push({})
+
+      // 纵坐标
+      xAxis.value = new Array(8).fill(0).map((_item, index) => {
+        return `12.1${index}`;
+      });
+      //
+      data.forEach((el) => {
+        if (el.name === '核心线程数') {
+          coreSize.value = el.value;
+        } else if (el.name === '最大线程数') {
+          maxSize.value = el.value;
         }
-        activeUsersData.value = el.value;
       });
     } catch (err) {
       // you can report use errorHandler or other
@@ -281,7 +287,27 @@
       setLoading(false);
     }
   };
-  fetchData();
+
+  // 定时加载数据
+  let timer: number | null = null; // 存储定时器 ID
+  onUnmounted(() => {
+    if (timer !== null) {
+      clearInterval(timer); // 组件销毁时清除定时器
+    }
+  });
+  watch(
+    () => props.tpName,
+    (newVal) => {
+      if (newVal != null) {
+        fetchData();
+        timer = window.setInterval(fetchData, 3 * 1000); // 每 60 秒执行一次
+      } else if (timer !== null) {
+        // 组件销毁时清除定时器
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+  );
 </script>
 
 <style scoped lang="less">
