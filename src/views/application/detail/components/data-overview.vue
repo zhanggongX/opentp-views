@@ -139,6 +139,7 @@
   const contentClickData = ref<number[]>([]);
   const contentExposureData = ref<number[]>([]);
   const activeUsersData = ref<number[]>([]);
+
   const { chartOption } = useChartOption((dark) => {
     return {
       grid: {

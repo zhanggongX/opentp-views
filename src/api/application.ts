@@ -81,6 +81,8 @@ export interface DataOverviewRes {
   data: Array<{ name: string; value: number[]; count: number }>;
 }
 
-export function threadPoolDataOverview() {
-  return axios.post<DataOverviewRes>('/api/data-overview');
+export function threadPoolDataOverview(ipAndPid: string, tpName: string) {
+  return axios.get<DataOverviewRes>(`/api/thread-pools/${tpName}`, {
+    params: { ipAndPid },
+  });
 }
